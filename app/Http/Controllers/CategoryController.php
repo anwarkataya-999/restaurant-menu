@@ -2,36 +2,90 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index(){
-        // la yjble kl shi mn table l categories
-        $categories = Category::all();
-        // l yfth index.blade.php b alb folder l categories w (compact...) hy lahta yb3tlha l data lb2al l $categories
-        return view('categories.index' , compact('categories'));
+    /**
+     * Display a listing of categories.
+     */
+    public function index()
+    {
+        $categories = Category::latest()->get();
+
+        return view('categories.index', compact('categories'));
     }
-    public function create(){
+
+    /**
+     * Show the form for creating a new category.
+     */
+    public function create()
+    {
         return view('categories.create');
     }
-    // request hiyi lahata laravel yst2bl mn 5ilela l data l jeyi mn l form
+
+    /**
+     * Store a newly created category in the database.
+     */
     public function store(Request $request)
-{
-    //hy mtl t2kid eno bdna name ejbare w ykun string w max 255 harf  w eno description fi ykun fade w huwi string
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'nullable|string',
-    ]);
-    // store in database
-    //hon 3m nzid record lal categories(y3ne bs n3abe l form bythfzo bl shakl l hatito bl table)
-    Category::create([
-        'name' => $request->name,
-        'description' => $request->description,
-        'is_active' => $request->has('is_active'),
-    ]);
-    // hata yrj3 la 3nd /categories
-    return redirect('/categories');
-}
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_active' => 'boolean',
+        ]);
+
+        Category::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'is_active' => $request->boolean('is_active'),
+        ]);
+
+        return redirect()
+            ->route('categories.index')
+            ->with('success', 'Category created successfully.');
+    }
+
+    /**
+     * Show the form for editing the specified category.
+     */
+    public function edit(Category $category)
+    {
+        return view('categories.edit', compact('category'));
+    }
+
+    /**
+     * Update the specified category in the database.
+     */
+    public function update(Request $request, Category $category)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_active' => 'boolean',
+        ]);
+
+        $category->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'is_active' => $request->boolean('is_active'),
+        ]);
+
+        return redirect()
+            ->route('categories.index')
+            ->with('success', 'Category updated successfully.');
+    }
+
+    /**
+     * Remove the specified category from the database.
+     */
+    public function destroy(Category $category)
+    {
+        $category->delete();
+
+        return redirect()
+            ->route('categories.index')
+            ->with('success', 'Category deleted successfully.');
+    }
 }
