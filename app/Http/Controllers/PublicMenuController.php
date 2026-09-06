@@ -12,10 +12,13 @@ class PublicMenuController extends Controller
     public function index()
     {
         $categories = Category::where('is_active', true)
+            ->whereHas('menuItems', function ($query) {
+                $query->where('is_available', true);
+            })
             ->with([
                 'menuItems' => function ($query) {
                     $query->where('is_available', true)
-                        ->latest();
+                        ->orderBy('title');
                 }
             ])
             ->orderBy('name')

@@ -2,28 +2,21 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Restaurant Menu</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
 </head>
 
 <body class="min-h-screen bg-gray-100 text-gray-800">
 
     <header class="bg-gray-900 text-white">
-
         <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
 
             <div class="text-center">
-
                 <h1 class="text-4xl font-bold">
                     Our Menu
                 </h1>
@@ -31,19 +24,25 @@
                 <p class="mt-2 text-gray-300">
                     Discover our delicious dishes.
                 </p>
-
             </div>
 
         </div>
-
     </header>
 
 
     <main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
 
-        @forelse($categories as $category)
+        @php
+            $hasItems = false;
+        @endphp
+
+        @foreach($categories as $category)
 
             @if($category->menuItems->count())
+
+                @php
+                    $hasItems = true;
+                @endphp
 
                 <section class="mb-12">
 
@@ -54,9 +53,11 @@
                         </h2>
 
                         @if($category->description)
+
                             <p class="mt-1 text-sm text-gray-500">
                                 {{ $category->description }}
                             </p>
+
                         @endif
 
                     </div>
@@ -79,11 +80,9 @@
                                 @else
 
                                     <div class="flex h-52 w-full items-center justify-center bg-gray-200">
-
                                         <span class="text-sm text-gray-500">
                                             No image
                                         </span>
-
                                     </div>
 
                                 @endif
@@ -124,7 +123,10 @@
 
             @endif
 
-        @empty
+        @endforeach
+
+
+        @if(!$hasItems)
 
             <div class="rounded-xl bg-white p-10 text-center shadow-sm">
 
@@ -138,7 +140,7 @@
 
             </div>
 
-        @endforelse
+        @endif
 
     </main>
 

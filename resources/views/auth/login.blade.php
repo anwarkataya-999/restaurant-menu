@@ -25,22 +25,26 @@
                 </p>
             </div>
 
+            @if(session('success'))
+                <div class="mb-6 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             @if($errors->any())
                 <div class="mb-6 rounded-lg border border-red-200 bg-red-50 p-4">
-
                     <ul class="list-inside list-disc space-y-1 text-sm text-red-600">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-
                 </div>
             @endif
 
             <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 sm:p-8">
 
                 <form
-                    action="{{ route('login') }}"
+                    action="{{ route('login.store') }}"
                     method="POST"
                     class="space-y-6"
                 >
